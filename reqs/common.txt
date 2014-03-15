@@ -4,3 +4,5 @@ django-compressor==1.3
 Fabric==1.6.1
 South==0.8.1
 Sphinx==1.1.3
+django-twilio==0.4
+twilio==3.6.6
