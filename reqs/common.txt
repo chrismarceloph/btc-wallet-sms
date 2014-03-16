@@ -1,8 +1,9 @@
 Django>=1.5.0,<=1.5.9
 django-celery==3.0.21
 django-compressor==1.3
+django-twilio==0.4
 Fabric==1.6.1
+httpretty==0.8.0
+requests==2.2.1
 South==0.8.1
 Sphinx==1.1.3
-django-twilio==0.4
-twilio==3.6.6
