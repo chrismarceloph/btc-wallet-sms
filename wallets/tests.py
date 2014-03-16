@@ -73,6 +73,34 @@ class WalletViewsTest(TestCase):
         response = view.make_response('Hello!')
         self.assertIn('Hello!', str(response))
 
+    def test_remove_wallet(self):
+        guid = '59fee004-0115-4861-8e4a-7f8af3ba31fb'
+        self.account = Account.objects.create(phone_number='+19081000000')
+        wallet_1 = Wallet.objects.create(account=self.account, guid=guid, main_password='password')
+        httpretty.register_uri(
+            httpretty.GET, 'https://blockchain.info/merchant/{}/balance?password={}'.format(wallet_1.guid, wallet_1.main_password),
+            body='{"balance": 1000000}', content_type='application/json'
+        )
+
+        view = ReceiveSMSView()
+        message = view.remove_wallet('+19081000000', guid)
+        self.assertIn('successfully', str(message))
+        message = view.remove_wallet('+19081000000', guid)
+        self.assertIn('Sorry', str(message))
+
+    def test_get_balance(self):
+        guid = '59fee004-0115-4861-8e4a-7f8af3ba31fb'
+        self.account = Account.objects.create(phone_number='+19081000000')
+        wallet_1 = Wallet.objects.create(account=self.account, guid=guid, main_password='password')
+        httpretty.register_uri(
+            httpretty.GET, 'https://blockchain.info/merchant/{}/balance?password={}'.format(wallet_1.guid, wallet_1.main_password),
+            body='{"balance": 1000000}', content_type='application/json'
+        )
+
+        view = ReceiveSMSView()
+        message = view.get_balance('+19081000000')
+        self.assertIn('1000000 Satoshis', str(message))
+
 
 class WalletIntegrationTest(TestCase):
     @override_settings(DEBUG=True)

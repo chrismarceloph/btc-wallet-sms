@@ -45,7 +45,7 @@ class ReceiveSMSView(View):
                 'main_password': main_password
             })
             if created:
-                parts.append('You have successfully added a wallet to your account.')
+                parts.append('You have successfully added this wallet to your account.')
             else:
                 parts.append('You have already added this wallet to your account before.')
         else:
@@ -62,6 +62,24 @@ class ReceiveSMSView(View):
             return False
         else:
             return True
+
+    def remove_wallet(self, phone_number, guid):
+        try:
+            Wallet.objects.get(account__phone_number=phone_number, guid=guid).delete()
+        except Wallet.DoesNotExist:
+            return 'Sorry, your parameters did not correspond to a valid wallet.'
+        else:
+            return 'You have successfully removed this wallet from your account.'
+
+    def get_balance(self, phone_number):
+        try:
+            account = Account.objects.get(phone_number=phone_number)
+        except Wallet.DoesNotExist:
+            return 'Sorry, your phone number is not registered yet.'
+        else:
+            satoshis = account.get_balance()
+            btc = satoshis / 100000000.0
+            return 'Your current balance is {} Satoshis ({} BTC).'.format(satoshis, btc)
 
     def make_response(self, message):
         response = Response()
