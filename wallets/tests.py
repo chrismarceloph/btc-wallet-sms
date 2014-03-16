@@ -1,4 +1,5 @@
 import httpretty
+from django.core.urlresolvers import reverse
 from django.test import TestCase
 from .models import Account, Wallet
 
@@ -28,3 +29,9 @@ class WalletModelsTest(TestCase):
             body='{"balance": 1000000}', content_type='application/json'
         )
         self.assertEquals(1000000, wallet_1.get_balance())
+
+
+class WalletViewsTest(TestCase):
+    def test_blank_message(self):
+        response = self.client.post(reverse('receive-sms'), body='+19081000000')
+        self.assertIn(response.content, 'Sorry')
